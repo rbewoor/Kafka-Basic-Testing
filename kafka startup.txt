@@ -1,0 +1,90 @@
+1) in command-promt-1111111  go to zookeeper root and start program zkserver
+
+C:\Everything\zookeeper-3.4.13\bin
+
+zkserver.cmd
+
+"C:\Everything\zookeeper-3.4.13\bin\zkserver.cmd"
+
+2) in com-prompt-22222 then go to kafka root\bin\windows and start the kafka server
+
+cd C:\Everything\Kafka2.1.0-Scala2.12\bin\windows
+
+kafka-server-start.bat C:\Everything\Kafka2.1.0-Scala2.12\config\server.properties
+
+3) cmd-prompt-333333333      Optional: create a topic name if required
+CREATE TOPIC
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic <TOPICNAME>
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic TwitterTopic1
+kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic TestNYT1
+
+LIST TOPICS
+kafka-topics.bat --zookeeper localhost:2181 --list
+
+DECRIBE TOPIC
+kafka-topics.bat --describe --zookeeper localhost:2181 --topic <TOPICNAME>
+
+DELETE A TOPIC
+kafka-topics.bat --zookeeper localhost:2181 --delete --topic <TOPICNAME>
+
+COUNT ALL THE MESSAGES IN A TOPIC
+kafka-run-class.bat kafka.tools.GetOffsetShell --broker-list localhost:9092,localhost:9093,localhost:9094 --topic <TOPICNAME> --time -1
+gives an output like this: TwitterTopicMain1:0:16874
+
+GET OFFSETS FOR A TOPIC
+kafka-run-class.bat kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic <TOPICNAME>
+kafka-run-class.bat kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic TestTopic1
+example it shows as:
+kafka-run-class.bat kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic TestTopic1
+TestTopic1:0:971
+<TOPIC NAME>:<PARTITION NUMBER>:<CURRENT OFFSET NUMBER>
+
+
+4) in the 3rd cmd-prompt-3333333
+Start the producer
+kafka-console-producer.bat --broker-list localhost:9092 --topic <TOPICNAME>
+
+
+5) in cmd-prompt-4444444
+start the consumer
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic <TOPICNAME>
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test1
+
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic TestNYT1 --from-beginning
+
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic TwitterTopic1 --from-beginning
+
+CONSUMER WITH GROUP-ID
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic <TOPICNAME> --from-beginning --consumer-property group.id=<GROUP_ID_NAME>
+
+CONSUME FIRST N MESSAGES:
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic <TOPICNAME> --from-beginning --max-messages 1
+
+CONSUME ONLY THE LAST N MESSAGES:
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic <TOPICNAME> --offset <OFFSETNUMBER> --partition 0
+if the current offset is say 100 and you wanna see last 5 messages then put OFFSETNUMBER = 95
+here lastest so put   970
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic TestTopic1 --offset 970 --partition 0
+
+
+MongoDB 4.0.3 2008R2Plus(64 bit)
+“C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe” --dbpath C:\Everything\MongoDB\data
+make sure to see the line:
+[initandlisten] waiting for connections on port 27107
+
+Next open a new command prompt to actually start
+
+“C:\Program Files\MongoDB\Server\4.0\bin\mongo.exe”
+
+export data:
+cd "C:\Program Files\MongoDB\Server\4.0\bin"
+mongoexport --db test --collection traffic --out <filename>.json
+
+
+
+--------------
+producer.send(topicName, b'Hello, World!')
+producer.send(topicName, key=b'message-two', value=b'This is Kafka-Python')
+------>>>>>>
+ConsumerRecord(topic='TestTopic1', partition=0, offset=2, timestamp=1545748735087, timestamp_type=0, key=None, value=b'Hello, World!', headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=13, serialized_header_size=-1)
+ConsumerRecord(topic='TestTopic1', partition=0, offset=3, timestamp=1545748735089, timestamp_type=0, key=b'message-two', value=b'This is Kafka-Python', headers=[], checksum=None, serialized_key_size=11, serialized_value_size=20, serialized_header_size=-1)
